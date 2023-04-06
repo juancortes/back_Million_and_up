@@ -46,6 +46,6 @@ class Api::V1::SalesController < ApplicationController
 	private
 
 	def sale_params
-		params.require(:sale).permit()
+		params.require(:sales).permit()
 	end
 end

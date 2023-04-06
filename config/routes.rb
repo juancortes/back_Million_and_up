@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :sales 
+      resources :products 
+      resources :shopping_carts 
     end
   end
 end
