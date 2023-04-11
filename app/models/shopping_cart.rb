@@ -1,3 +1,3 @@
 class ShoppingCart < ApplicationRecord
-  belongs_to :products
+  belongs_to :product, optional: true
 end

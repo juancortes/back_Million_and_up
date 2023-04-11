@@ -13,11 +13,32 @@ class Api::V1::SalesController < ApplicationController
 
 	#POST /sales
 	def create
-		@sale = Sale.new(sale_params)
-		if @sale.save
-			render json:@sale
-		else
-			render error: {error: 'Unable to create sale'}, status:400
+		shoppingCart = ShoppingCart.all
+		if shoppingCart.count > 0 
+			total_amount = 0
+			shoppingCart.each { |sc|
+				total_amount += sc.count
+			}
+			sale = Sale.new
+			sale.total_amount = total_amount
+			sale.created_at = Time.now
+			sale.updated_at = Time.now
+			if sale.save
+				shoppingCart.each { |sc|
+					detalle = DetailSale.new
+					detalle.products_id = sc.products_id
+					detalle.count = sc.count
+					detalle.price = sc.price
+					detalle.sales_id = sale.id
+					detalle.created_at = Time.now
+					detalle.updated_at = Time.now
+					detalle.save
+				}
+				shoppingCart.delete_all 
+				render json:@sale
+			else
+				render error: {error: 'Unable to create sale'}, status:400
+			end
 		end
 	end
 
@@ -34,6 +55,7 @@ class Api::V1::SalesController < ApplicationController
 
 	#DELETE /sales/:id
 	def destroy
+		p "si"
 		@sale = Sale.find(params[:id])
 		if @sale
 			@sale.destroy
@@ -43,9 +65,17 @@ class Api::V1::SalesController < ApplicationController
 		end
 	end
 
+	def getCountSaleByProductsId
+		shoppingCarts = DetailSale
+						.select("sum(count)")
+                        .where('products_id = ?',params[:id])						
+						.all
+		render json: shoppingCarts
+	end
+
 	private
 
 	def sale_params
-		params.require(:sales).permit()
+		params.require(:sale).permit()
 	end
 end

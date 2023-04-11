@@ -1,4 +1,4 @@
 class DetailSale < ApplicationRecord
-  belongs_to :products
-  belongs_to :sales
+  belongs_to :product, optional: true
+  belongs_to :sale, optional: true
 end

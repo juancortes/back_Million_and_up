@@ -15,6 +15,7 @@ Rails.application.configure do
   config.consider_all_requests_local = true
 
   config.urlProducts       = 'https://fakestoreapi.com/products'
+  config.urlProducts2      = 'https://dummyjson.com/products/'
 
   # Enable server timing
   config.server_timing = true
