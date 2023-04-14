@@ -31,11 +31,33 @@ class ApplicationController < ActionController::API
 	   			product.count = obj.rating.count
 		      product.save
 
-	   		}	      
+	   		}
+
+	   		url   = URI("#{Rails.configuration.urlProducts2}")
+		  	https = Net::HTTP.new(url.host, url.port)
+				https.use_ssl = true
+				request = Net::HTTP::Get.new(url)
+				response = https.request(request)
+		    object = JSON.parse(response.read_body, object_class: OpenStruct)
+		 		object[:products].each{ |obj|
+		 			product = Product.new
+	   			product.title = obj.title
+	   			product.price = obj.price
+	   			product.description = obj.description
+	   			product.category = obj.category
+	   			product.image = obj.thumbnail
+	   			product.rate = obj.rating
+	   			product.count = obj.stock
+		      product.save
+		 		}
 
 	      rescue => e
 	        puts "failed error = #{e}"
 	    end
   	end
+
+    
+
+
   end
 end
